@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>박지훈 ♥ 이서연 결혼합니다</title>
+  <meta name="description" content="2027년 5월 15일 토요일 오후 12시 30분, 더채플앳청담" />
+
+  <!-- 카카오톡·문자 링크 미리보기 (배포 후 og:image는 절대경로로 바꾸세요) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="박지훈 ♥ 이서연 결혼합니다" />
+  <meta property="og:description" content="2027년 5월 15일 토요일 오후 12시 30분" />
+  <meta property="og:image" content="https://USERNAME.github.io/wedding-invitation/images/og.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+
+    <!-- 커버 -->
+    <section class="cover">
+      <p class="cover-date" id="coverDate"></p>
+      <div class="cover-photo"><img id="coverImg" alt="커버 사진" /></div>
+      <h1 class="cover-names"><span data-groom></span><i>&amp;</i><span data-bride></span></h1>
+      <p class="cover-venue" id="coverVenue"></p>
+    </section>
+
+    <!-- 인사말 -->
+    <section class="section fade">
+      <p class="eyebrow">INVITATION</p>
+      <h2 id="greetTitle"></h2>
+      <p class="greeting" id="greetMsg"></p>
+      <div class="parents" id="parents"></div>
+      <button class="btn-outline" id="contactBtn">연락하기</button>
+    </section>
+
+    <!-- 달력 -->
+    <section class="section fade alt">
+      <p class="eyebrow">WEDDING DAY</p>
+      <p class="date-text" id="dateText"></p>
+      <table class="calendar" id="calendar"></table>
+      <div class="countdown" id="countdown"></div>
+      <p class="dday" id="dday"></p>
+    </section>
+
+    <!-- 갤러리 -->
+    <section class="section fade">
+      <p class="eyebrow">GALLERY</p>
+      <h2>우리의 순간</h2>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <!-- 오시는 길 -->
+    <section class="section fade alt">
+      <p class="eyebrow">LOCATION</p>
+      <h2>오시는 길</h2>
+      <p class="venue-name" id="venueName"></p>
+      <p class="venue-addr" id="venueAddr"></p>
+      <div class="map-buttons">
+        <a id="naverMap" target="_blank" rel="noopener">네이버 지도</a>
+        <a id="kakaoMap" target="_blank" rel="noopener">카카오맵</a>
+        <a id="tmap">티맵</a>
+      </div>
+      <button class="btn-text" id="copyAddr">주소 복사</button>
+      <dl class="transport" id="transport"></dl>
+    </section>
+
+    <!-- 마음 전하실 곳 -->
+    <section class="section fade">
+      <p class="eyebrow">ACCOUNT</p>
+      <h2>마음 전하실 곳</h2>
+      <p class="sub">참석이 어려우신 분들을 위해 기재했습니다.<br />너그러운 마음으로 양해 부탁드립니다.</p>
+      <div class="accordion" id="accounts"></div>
+    </section>
+
+    <!-- 공유 -->
+    <section class="section share fade">
+      <button class="btn-fill" id="shareBtn">청첩장 공유하기</button>
+      <button class="btn-outline" id="copyLink">링크 복사</button>
+      <p class="footer">Thank you for celebrating with us</p>
+    </section>
+  </main>
+
+  <!-- 라이트박스 -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lb-close" aria-label="닫기">&times;</button>
+    <button class="lb-prev" aria-label="이전">&#8249;</button>
+    <img alt="" />
+    <button class="lb-next" aria-label="다음">&#8250;</button>
+    <p class="lb-count"></p>
+  </div>
+
+  <!-- 연락하기 모달 -->
+  <div class="modal" id="contactModal" hidden>
+    <div class="modal-box">
+      <h3>연락하기</h3>
+      <div id="contactList"></div>
+      <button class="btn-outline modal-close">닫기</button>
+    </div>
+  </div>
+
+  <button class="bgm-btn" id="bgmBtn" hidden aria-label="배경음악">♪</button>
+  <audio id="bgm" loop></audio>
+  <div class="toast" id="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
