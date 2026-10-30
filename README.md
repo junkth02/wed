@@ -27,7 +27,7 @@ GitHub Pages로 배포하는 정적 모바일 청첩장 템플릿입니다. 빌�
 2. 사진을 `images/`에 넣고 `config.js`의 `cover`, `gallery` 경로를 바꿉니다.
    - 사진은 가로 1200px 정도, 장당 300KB 이하로 줄이면 로딩이 빠릅니다.
 3. `index.html` 상단의 `<title>`, `og:title`, `og:description`, `og:image`를 바꿉니다.
-   - `og:image`는 카카오톡 미리보기 사진이며 **전체 URL**이어야 합니다 (예: `https://아이디.github.io/wedding-invitation/images/og.jpg`, 가로 800×400 정도 권장).
+   - `og:image`는 카카오톡 미리보기 사진이며 **전체 URL**이어야 합니다 (예: `https://junkth02.github.io/wed/images/og.jpg`, 가로 800×400 정도 권장).
 
 ## 로컬에서 보기
 
@@ -41,14 +41,14 @@ python -m http.server 8000
 
 ## GitHub Pages 배포
 
-1. GitHub에서 새 저장소 `wedding-invitation` 생성 (Public)
+1. GitHub에서 새 저장소 `wed` 생성 (Public)
 2. 이 폴더를 푸시
    ```bash
-   git remote add origin https://github.com/아이디/wedding-invitation.git
+   git remote add origin https://github.com/junkth02/wed.git
    git push -u origin main
    ```
 3. 저장소 **Settings → Pages → Branch: `main` / `(root)` → Save**
-4. 1~2분 후 `https://아이디.github.io/wedding-invitation/` 에서 확인
+4. 1~2분 후 `https://junkth02.github.io/wed/` 에서 확인
 
 > 카카오톡에서 미리보기가 예전 것으로 보이면 [카카오 공유 디버거](https://developers.kakao.com/tool/debugger/sharing)에서 캐시를 초기화하세요.
 
