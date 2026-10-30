@@ -149,3 +149,11 @@ a { color: inherit; text-decoration: none; }
 }
 .bgm-btn.playing { animation: spin 3s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 일본어판 ---------- */
+html[lang="ja"] {
+  --serif: "Zen Old Mincho", "Gowun Batang", serif;
+  --sans: "Zen Kaku Gothic New", "Gowun Dodum", sans-serif;
+}
+html[lang="ja"] .cover-names { font-size: 22px; letter-spacing: .05em; }
+.cover-names span { white-space: nowrap; }

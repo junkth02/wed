@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <main class="card">
@@ -61,9 +61,9 @@
       <p class="venue-name" id="venueName"></p>
       <p class="venue-addr" id="venueAddr"></p>
       <div class="map-buttons">
-        <a id="naverMap" target="_blank" rel="noopener">네이버 지도</a>
-        <a id="kakaoMap" target="_blank" rel="noopener">카카오맵</a>
-        <a id="tmap">티맵</a>
+        <a data-map="naver" target="_blank" rel="noopener">네이버 지도</a>
+        <a data-map="kakao" target="_blank" rel="noopener">카카오맵</a>
+        <a data-map="tmap">티맵</a>
       </div>
       <button class="btn-text" id="copyAddr">주소 복사</button>
       <dl class="transport" id="transport"></dl>
@@ -107,7 +107,7 @@
   <audio id="bgm" loop></audio>
   <div class="toast" id="toast"></div>
 
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+  <script src="config.js?v=5"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>

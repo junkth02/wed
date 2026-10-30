@@ -1,14 +1,56 @@
 (() => {
-  const W = window.WEDDING;
+  // ---------- 언어 ----------
+  // <html lang="ja">인 페이지(jp/)는 config.js의 ja 항목으로 덮어씀
+  const LANG = document.documentElement.lang === "ja" ? "ja" : "ko";
+  const base = window.WEDDING;
+  const W = LANG === "ja" ? merge(base, base.ja) : base;
+  function merge(a, b) {
+    const out = { ...a };
+    for (const k in b) {
+      const isObj = b[k] && typeof b[k] === "object" && !Array.isArray(b[k]);
+      out[k] = isObj && a[k] ? { ...a[k], ...b[k] } : b[k];
+    }
+    return out;
+  }
+
+  const T = {
+    ko: {
+      days: ["일", "월", "화", "수", "목", "금", "토"],
+      time: (h, m) => `${h < 12 ? "오전" : "오후"} ${h % 12 || 12}시${m ? ` ${m}분` : ""}`,
+      date: (Y, M, D, day, time) => `${Y}년 ${M}월 ${D}일 ${day}요일 ${time}`,
+      parent: (p) => `<p>${p.father} · ${p.mother}<span>의 ${p.order}</span><b>${p.name}</b></p>`,
+      before: (c, n) => `${c}의 결혼식이 <em>${n}일</em> 남았습니다.`,
+      today: (c) => `오늘은 <em>${c}</em>의 결혼식입니다.`,
+      after: (c, n) => `${c}, 결혼한 지 <em>${n}일</em>째입니다.`,
+      photo: "갤러리 사진", groom: "신랑", bride: "신부",
+      groomAcc: "신랑측 계좌번호", brideAcc: "신부측 계좌번호", copy: "복사",
+      copiedAddr: "주소가 복사되었습니다.", copiedAcc: "계좌번호가 복사되었습니다.", copiedLink: "링크가 복사되었습니다.",
+    },
+    ja: {
+      days: ["日", "月", "火", "水", "木", "金", "土"],
+      time: (h, m) => `${h < 12 ? "午前" : "午後"}${h % 12 || 12}時${m ? `${m}分` : ""}`,
+      date: (Y, M, D, day, time) => `${Y}年${M}月${D}日（${day}）${time}`,
+      parent: (p) => `<p>${p.father}・${p.mother}<span>の${p.order}</span><b>${p.name}</b></p>`,
+      before: (c, n) => `${c}の結婚式まで あと<em>${n}日</em>`,
+      today: (c) => `本日は <em>${c}</em> の結婚式です`,
+      after: (c, n) => `${c} 結婚して<em>${n}日</em>目`,
+      photo: "ギャラリー写真", groom: "新郎", bride: "新婦",
+      groomAcc: "", brideAcc: "", copy: "コピー",
+      copiedAddr: "住所をコピーしました", copiedAcc: "", copiedLink: "リンクをコピーしました",
+    },
+  }[LANG];
+
   const $ = (s) => document.querySelector(s);
-  const DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+  const DAYS = T.days;
   const date = new Date(W.date);
 
   // 한국시간 기준 날짜 요소
   const kst = new Date(date.getTime() + 9 * 3600 * 1000);
   const Y = kst.getUTCFullYear(), M = kst.getUTCMonth() + 1, D = kst.getUTCDate();
   const h = kst.getUTCHours(), m = kst.getUTCMinutes(), dow = kst.getUTCDay();
-  const timeText = `${h < 12 ? "오전" : "오후"} ${h % 12 || 12}시${m ? ` ${m}분` : ""}`;
+  const timeText = T.time(h, m);
+  const dateText = T.date(Y, M, D, DAYS[dow], timeText);
+  const couple = `${W.groom.name} ♥ ${W.bride.name}`;
   const venueTitle = [W.venue.name, W.venue.hall].filter(Boolean).join(" ");
 
   // ---------- 텍스트 채우기 ----------
@@ -16,16 +58,14 @@
   document.querySelectorAll("[data-bride]").forEach((el) => (el.textContent = W.bride.name));
   $("#coverDate").textContent = `${Y}. ${String(M).padStart(2, "0")}. ${String(D).padStart(2, "0")}`;
   $("#coverImg").src = W.cover;
-  $("#coverVenue").textContent = `${Y}년 ${M}월 ${D}일 ${DAYS[dow]}요일 ${timeText}\n${venueTitle}`;
+  $("#coverVenue").textContent = `${dateText}\n${venueTitle}`;
   $("#coverVenue").style.whiteSpace = "pre-line";
 
   $("#greetTitle").textContent = W.greeting.title;
   $("#greetMsg").textContent = W.greeting.message;
-  const parentLine = (p) =>
-    `<p>${p.father} · ${p.mother}<span>의 ${p.order}</span><b>${p.name}</b></p>`;
-  $("#parents").innerHTML = parentLine(W.groom) + parentLine(W.bride);
+  $("#parents").innerHTML = T.parent(W.groom) + T.parent(W.bride);
 
-  $("#dateText").textContent = `${Y}년 ${M}월 ${D}일 ${DAYS[dow]}요일 ${timeText}`;
+  $("#dateText").textContent = dateText;
 
   // ---------- 달력 ----------
   const first = new Date(Date.UTC(Y, M - 1, 1)).getUTCDay();
@@ -53,9 +93,7 @@
     $("#countdown").innerHTML = units.map(([v, l]) => `<div><b>${v}</b><small>${l}</small></div>`).join("");
     const days = Math.ceil(diff / 86400000);
     $("#dday").innerHTML =
-      days > 0 ? `${W.groom.name} ♥ ${W.bride.name}의 결혼식이 <em>${days}일</em> 남았습니다.`
-      : days === 0 ? `오늘은 <em>${W.groom.name} ♥ ${W.bride.name}</em>의 결혼식입니다.`
-      : `${W.groom.name} ♥ ${W.bride.name}, 결혼한 지 <em>${-days}일</em>째입니다.`;
+      days > 0 ? T.before(couple, days) : days === 0 ? T.today(couple) : T.after(couple, -days);
   };
   tick();
   setInterval(tick, 1000);
@@ -67,7 +105,7 @@
   if (n % 3 && n % 2 === 0) gallery.style.gridTemplateColumns = "repeat(2, 1fr)";
   W.gallery.forEach((src, i) => {
     const b = document.createElement("button");
-    b.innerHTML = `<img src="${src}" alt="갤러리 사진 ${i + 1}" loading="lazy" />`;
+    b.innerHTML = `<img src="${src}" alt="${T.photo} ${i + 1}" loading="lazy" />`;
     b.onclick = () => openLb(i);
     gallery.appendChild(b);
   });
@@ -102,35 +140,43 @@
   const v = W.venue;
   $("#venueName").textContent = venueTitle;
   $("#venueAddr").textContent = `${v.address}${v.tel ? ` · Tel. ${v.tel}` : ""}`;
-  const q = encodeURIComponent(v.name);
-  $("#naverMap").href = `https://map.naver.com/p/search/${q}`;
-  $("#kakaoMap").href = `https://map.kakao.com/link/search/${q}`;
-  $("#tmap").href = `tmap://search?name=${q}`;
-  $("#copyAddr").onclick = () => copy(v.address, "주소가 복사되었습니다.");
+  // 지도 검색은 한국어 이름으로 해야 정확하게 찾음
+  const q = encodeURIComponent(base.venue.name);
+  const mapLinks = {
+    naver: `https://map.naver.com/p/search/${q}`,
+    kakao: `https://map.kakao.com/link/search/${q}`,
+    tmap: `tmap://search?name=${q}`,
+    google: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${base.venue.name} ${v.address}`)}`,
+  };
+  document.querySelectorAll("[data-map]").forEach((a) => (a.href = mapLinks[a.dataset.map]));
+  $("#copyAddr").onclick = () => copy(v.address, T.copiedAddr);
   $("#transport").innerHTML = v.transport.map((t) => `<dt>${t.title}</dt><dd>${t.desc}</dd>`).join("");
 
   // ---------- 계좌 ----------
-  const accHtml = (title, list) => `
-    <div class="acc-item">
-      <button class="acc-head">${title}</button>
-      <div class="acc-body">
-        ${list.map((a) => `
-          <div class="acc-row">
-            <div><small>${a.role} ${a.name}</small>${a.bank} ${a.number}</div>
-            <button data-copy="${a.bank} ${a.number}">복사</button>
-          </div>`).join("")}
-      </div>
-    </div>`;
-  $("#accounts").innerHTML = accHtml("신랑측 계좌번호", W.accounts.groom) + accHtml("신부측 계좌번호", W.accounts.bride);
-  $("#accounts").addEventListener("click", (e) => {
-    const copyBtn = e.target.closest("[data-copy]");
-    if (copyBtn) return copy(copyBtn.dataset.copy, "계좌번호가 복사되었습니다.");
-    const head = e.target.closest(".acc-head");
-    if (!head) return;
-    const item = head.parentElement, body = head.nextElementSibling;
-    item.classList.toggle("open");
-    body.style.maxHeight = item.classList.contains("open") ? body.scrollHeight + "px" : 0;
-  });
+  if (W.accounts && $("#accounts")) renderAccounts();
+  function renderAccounts() {
+    const accHtml = (title, list) => `
+      <div class="acc-item">
+        <button class="acc-head">${title}</button>
+        <div class="acc-body">
+          ${list.map((a) => `
+            <div class="acc-row">
+              <div><small>${a.role} ${a.name}</small>${a.bank} ${a.number}</div>
+              <button data-copy="${a.bank} ${a.number}">${T.copy}</button>
+            </div>`).join("")}
+        </div>
+      </div>`;
+    $("#accounts").innerHTML = accHtml(T.groomAcc, W.accounts.groom) + accHtml(T.brideAcc, W.accounts.bride);
+    $("#accounts").addEventListener("click", (e) => {
+      const copyBtn = e.target.closest("[data-copy]");
+      if (copyBtn) return copy(copyBtn.dataset.copy, T.copiedAcc);
+      const head = e.target.closest(".acc-head");
+      if (!head) return;
+      const item = head.parentElement, body = head.nextElementSibling;
+      item.classList.toggle("open");
+      body.style.maxHeight = item.classList.contains("open") ? body.scrollHeight + "px" : 0;
+    });
+  }
 
   // ---------- 연락하기 ----------
   const modal = $("#contactModal");
@@ -138,7 +184,7 @@
     <div class="contact-row"><span>${label} ${p.name}</span>
       <span><a href="tel:${p.phone}" aria-label="전화">📞</a><a href="sms:${p.phone}" aria-label="문자">✉️</a></span>
     </div>` : "";
-  $("#contactList").innerHTML = contactRow("신랑", W.groom) + contactRow("신부", W.bride);
+  $("#contactList").innerHTML = contactRow(T.groom, W.groom) + contactRow(T.bride, W.bride);
   $("#contactBtn").onclick = () => (modal.hidden = false);
   modal.addEventListener("click", (e) => {
     if (e.target === modal || e.target.classList.contains("modal-close")) modal.hidden = true;
@@ -149,9 +195,9 @@
     const data = { title: document.title, text: $('meta[name="description"]').content, url: location.href };
     if (navigator.share) {
       try { await navigator.share(data); } catch (_) { /* 사용자가 취소 */ }
-    } else copy(location.href, "링크가 복사되었습니다.");
+    } else copy(location.href, T.copiedLink);
   };
-  $("#copyLink").onclick = () => copy(location.href, "링크가 복사되었습니다.");
+  $("#copyLink").onclick = () => copy(location.href, T.copiedLink);
 
   // ---------- 배경음악 ----------
   if (W.bgm) {
