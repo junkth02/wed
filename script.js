@@ -9,13 +9,14 @@
   const Y = kst.getUTCFullYear(), M = kst.getUTCMonth() + 1, D = kst.getUTCDate();
   const h = kst.getUTCHours(), m = kst.getUTCMinutes(), dow = kst.getUTCDay();
   const timeText = `${h < 12 ? "오전" : "오후"} ${h % 12 || 12}시${m ? ` ${m}분` : ""}`;
+  const venueTitle = [W.venue.name, W.venue.hall].filter(Boolean).join(" ");
 
   // ---------- 텍스트 채우기 ----------
   document.querySelectorAll("[data-groom]").forEach((el) => (el.textContent = W.groom.name));
   document.querySelectorAll("[data-bride]").forEach((el) => (el.textContent = W.bride.name));
   $("#coverDate").textContent = `${Y}. ${String(M).padStart(2, "0")}. ${String(D).padStart(2, "0")}`;
   $("#coverImg").src = W.cover;
-  $("#coverVenue").textContent = `${Y}년 ${M}월 ${D}일 ${DAYS[dow]}요일 ${timeText}\n${W.venue.name} ${W.venue.hall}`;
+  $("#coverVenue").textContent = `${Y}년 ${M}월 ${D}일 ${DAYS[dow]}요일 ${timeText}\n${venueTitle}`;
   $("#coverVenue").style.whiteSpace = "pre-line";
 
   $("#greetTitle").textContent = W.greeting.title;
@@ -61,6 +62,9 @@
 
   // ---------- 갤러리 + 라이트박스 ----------
   const gallery = $("#gallery");
+  // 3의 배수가 아니면 빈 칸이 남지 않도록 2열로
+  const n = W.gallery.length;
+  if (n % 3 && n % 2 === 0) gallery.style.gridTemplateColumns = "repeat(2, 1fr)";
   W.gallery.forEach((src, i) => {
     const b = document.createElement("button");
     b.innerHTML = `<img src="${src}" alt="갤러리 사진 ${i + 1}" loading="lazy" />`;
@@ -96,7 +100,7 @@
 
   // ---------- 오시는 길 ----------
   const v = W.venue;
-  $("#venueName").textContent = `${v.name} ${v.hall}`;
+  $("#venueName").textContent = venueTitle;
   $("#venueAddr").textContent = `${v.address}${v.tel ? ` · Tel. ${v.tel}` : ""}`;
   const q = encodeURIComponent(v.name);
   $("#naverMap").href = `https://map.naver.com/p/search/${q}`;
